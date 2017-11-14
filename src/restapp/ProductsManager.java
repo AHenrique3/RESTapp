@@ -5,23 +5,29 @@
  */
 package restapp;
 
-import com.google.gson.Gson;
 import java.util.ArrayList;
 
-/**Obtém os produtos
+/**ProductsManager: obtém os produtos, os armazena internamente, 
+ * e os retorna quando solicitado
  *
  * @author afonso
  */
-public class GetProducts {
+public class ProductsManager {
     private ArrayList<Product> availableProducts = new ArrayList();
 
-    public GetProducts() {
+    public ProductsManager() {
         if(availableProducts.isEmpty()){
-            setProducts();
+            setAvailableProducts();
         }
     }
 
-    private void setProducts(){
+    //Retorna todos os produtos armazenados
+    public ArrayList<Product> getAvailableProducts() {
+        return availableProducts;
+    }
+
+    //Obtém os produtos a serem armazenados, no momento os produtos são hardCoded
+    private void setAvailableProducts(){
         availableProducts   = new ArrayList();
         Product p1 = new Product("gold_plan", 59.90, "plano pago gold");
         availableProducts.add(p1);
@@ -29,16 +35,9 @@ public class GetProducts {
         availableProducts.add(p2);
         Product p3 = new Product("super_premium_plan", 129.90, "o melhor plano de todos");
         availableProducts.add(p3);
-    }
-
-    public String getProductsAsJSON(){
-        if(availableProducts.isEmpty()){
-            setProducts();
-        }
-        Gson gson = new Gson();
-        return gson.toJson(availableProducts);
-    }
+    }    
     
+    //Retorna o produto com o nome especificado e null se não existe
     public Product fetchProduct(String productName){
         for(Product p : availableProducts){
             if(productName.equals(p.getProduct())){
@@ -47,6 +46,4 @@ public class GetProducts {
         }
         return null;
     }
-    
-    
 }

@@ -5,40 +5,53 @@
  */
 package restapp;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**
+/**PlansHandler: responde aos pedidos no contexto /plans
+ * Função atual: rejeita outros pedidos diferentes de GET,
+ * e responde um JSON com os produtos existentes
  *
  * @author afonso
  */
 public class PlansHandler implements HttpHandler{
-    private GetProducts productList;
+    private ProductsManager productList;
 
-    public PlansHandler(GetProducts productList) {
+    public PlansHandler(ProductsManager productList) {
         this.productList = productList;
     }
     
     @Override
     public void handle(HttpExchange t) throws IOException {
-        String method = t.getRequestMethod();
+        //Resposta de erro padrão
         String response = "Requisicao indisponivel para esse dominio!";
         int HTTPStatusCode = 403;
         
+        //Obtém o método e só executa se for GET
+        String method = t.getRequestMethod();
         LogService.reportMsgs("PlansHandler", "Requisição feita - método: "+method);
-        
         if(method.equals("GET")){
-            response = productList.getProductsAsJSON();
+            response = getResponseContent();
             HTTPStatusCode = 200;
         }
         
+        //Montando resposta
         LogService.reportMsgs("PlansHandler", "Respondendo: "+response);
+        
         t.sendResponseHeaders(HTTPStatusCode, response.length());
         OutputStream os = t.getResponseBody();
         os.write(response.getBytes());
         os.close();
+        
         LogService.reportMsgs("PlansHandler", "Respondido - Thread Encerrada :)");
+    }
+    
+    //Obtem os produtos e retorna a descrição em JSON deles
+    private String getResponseContent(){
+        Gson gson = new Gson();
+        return gson.toJson(productList.getAvailableProducts());
     }
 }

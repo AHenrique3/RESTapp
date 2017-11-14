@@ -5,9 +5,8 @@
  */
 package restapp;
 
-import com.google.gson.Gson;
-
-/**
+/**Product: classe para armazenar os dados de um produto
+ * Contém os campos nome do produto (product) preço (price) e descrição (description)
  *
  * @author afonso
  */
@@ -37,12 +36,5 @@ public class Product {
     @Override
     public String toString(){
         return String.format(" product: %s \n price: R$%f\n description: %s\n",product,price,description);
-    }
-    
-    public String productToJSON(Product p) {
-        Gson gson = new Gson();
-        String userJSONString = gson.toJson(p);
-
-        return userJSONString;
     }
 }

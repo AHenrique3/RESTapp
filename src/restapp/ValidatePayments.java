@@ -5,50 +5,47 @@
  */
 package restapp;
 
-import com.google.gson.Gson;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**GetPayments : Gerencia os pagamentos (Protótipo de banco - Guarda os dados em um array de objetos)
+/**ValidatePayments: Valida um CrudePayment e gera um Payment adequado,
+ * se a validação falha, retorna uma mensagem de erro
  *
  * @author afonso
  */
-public class GetPayments {
-    private ArrayList<Payment> paymentsList = new ArrayList();
-    private GetProducts productsList;
+public class ValidatePayments {
+    private PaymentsManager paymentsList;
+    private ProductsManager productsList;
 
-    public GetPayments(GetProducts productsList) {
+    public ValidatePayments(PaymentsManager paymentsList, ProductsManager productsList) {
+        this.paymentsList = paymentsList;
         this.productsList = productsList;
     }
     
-    public String setPayment(CrudePayment paymentToStore){
-        String returnedError = validPayment(paymentToStore);
+    //Faz a validação e cria o pagamento se ele é válido
+    public String validateAndCreatePayment(CrudePayment paymentToValidate){
+        LogService.reportMsgs("ValidatePayments", "Iniciando Validação");
+        String returnedError = validPayment(paymentToValidate);
         if (returnedError == null){
-            LogService.reportMsgs("GetPayments", "Pagamento Validado");
+            LogService.reportMsgs("ValidatePayments", "Pagamento Validado");
             
-            //compondo o resto do pagamento
-            int transaction_id = paymentsList.size();
-            double discount = Double.parseDouble(paymentToStore.getDiscount());
-            double price = paymentToStore.getProduct_price()*(1-discount);
+            //compondo o novo pagamento
+            int transaction_id = paymentsList.getPaymentsListSize();
+            double discount = Double.parseDouble(paymentToValidate.getDiscount());
+            double price = paymentToValidate.getProduct_price()*(1-discount);
             
-            Payment p = new Payment(paymentToStore.getPayment_date(), paymentToStore.getPayment_type(), paymentToStore.getProduct(), paymentToStore.getProduct_price(), discount, price, transaction_id);
+            Payment p = new Payment(paymentToValidate.getPayment_date(), paymentToValidate.getPayment_type(), paymentToValidate.getProduct(), paymentToValidate.getProduct_price(), discount, price, transaction_id);
             
-            paymentsList.add(p);
-            LogService.reportMsgs("GetPayments","Listagem de pagamentos: \n" + getPaymentsAsJSON());
-            LogService.reportMsgs("GetPayments", "Pagamento Adicionado");
+            paymentsList.addPayment(p);
+            LogService.reportMsgs("ValidatePayments", "Pagamento Adicionado");
+        }else{
+            LogService.reportMsgs("ValidatePayments", "Falha de Validação");
         }
         return returnedError;
     }
-    
-    public String getPaymentsAsJSON(){
-        Gson gson = new Gson();
-        return gson.toJson(paymentsList);
-    }
+
     
     /**validPayment : faz a validação dos pagamentos recebidos
      * Regras: 
@@ -57,11 +54,13 @@ public class GetPayments {
      *      product fornecido existe e product_price corresponde ao produto
      *      discount fornecido entre 0 e 0.5
      *      
+     * @param paymentToValidate
      * @return String erro : null se não há erro, senão mensagem de erro 
      */
     private String validPayment(CrudePayment paymentToValidate){
         String erro = null;
         
+        //Verificando campos vazios
         if(paymentToValidate.getPayment_date() == null){
             return "Campo payment_date vazio";
         }
@@ -78,6 +77,7 @@ public class GetPayments {
             return "Campo discount vazio";
         }
         
+        //Verificando data, existência do produto e preço correto
         DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
         sourceFormat.setLenient(false);
         try {
@@ -88,7 +88,7 @@ public class GetPayments {
         } catch (ParseException ex) {
             erro = "Data invalida";
         }
-        
+
         Product p = productsList.fetchProduct(paymentToValidate.getProduct());
         if(p == null){
             erro = "Produto nao encontrado";
@@ -101,7 +101,7 @@ public class GetPayments {
         if(discount > 0.5 || discount < 0){
             erro = "Valor de desconto inadequado";
         }
-        LogService.reportMsgs("GetPayments", erro);
+        LogService.reportMsgs("ValidatePayments", "Erro: " + erro);
         return erro;
     }
 }

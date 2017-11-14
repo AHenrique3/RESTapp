@@ -5,14 +5,8 @@
  */
 package restapp;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**Classe central do servidor contendo a main e as funções de inicialização e conexão.
  *
@@ -23,17 +17,19 @@ import java.util.logging.Logger;
 public class RESTapp {
 
     private static int port = 8000;
-    private static GetProducts productList = new GetProducts();
-    private static GetPayments paymentsList = new GetPayments(productList);
+    private static ProductsManager productList = new ProductsManager();
+    private static PaymentsManager paymentsList = new PaymentsManager();
     
-    /**Função main(String[] args) - Dispara a execução do sistema e configura os handlers.
+    /**Função main(String[] args) - Dispara a execução do servidor e configura os handlers.
      * 
      * @param args 
+     * @throws java.lang.Exception 
      */
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext("/plans", new PlansHandler(productList));
-        server.createContext("/payments", new PaymentHandler(paymentsList));
+        //Adiciona os contextos pedidos e seta os handlers
+        server.createContext("/plans", new PlansHandler(productList)); 
+        server.createContext("/payment", new PaymentHandler(paymentsList, productList));
         server.setExecutor(null); // creates a default executor
         server.start();
         LogService.reportMsgs("RESTapp", "Servidor iniciado - porta "+port);

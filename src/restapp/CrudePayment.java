@@ -5,7 +5,9 @@
  */
 package restapp;
 
-/**Razão para discount como String: parse JSON não distingue campo numérico vazio de 0.00 -> não permite validação correta
+/**Classe para armazenar os dados do pagamento antes do processamento
+ * Razão para discount como String: parse não distingue campo numérico vazio de 0.00
+ * não permitindo validação correta
  *
  * @author afonso
  */
