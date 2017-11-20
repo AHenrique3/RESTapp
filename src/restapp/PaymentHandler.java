@@ -75,6 +75,8 @@ public class PaymentHandler implements HttpHandler {
         //Montando resposta
         LogService.reportMsgs("PaymentHandler", "Respondendo: "+response);
         
+        t.getResponseHeaders().add("Access-Control-Allow-Origin","*");
+        t.getResponseHeaders().add("Content-Type", "text/plain"); 
         t.sendResponseHeaders(HTTPStatusCode, response.length());
         OutputStream os = t.getResponseBody();
         os.write(response.getBytes());

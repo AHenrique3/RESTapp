@@ -41,6 +41,7 @@ public class PlansHandler implements HttpHandler{
         //Montando resposta
         LogService.reportMsgs("PlansHandler", "Respondendo: "+response);
         t.getResponseHeaders().add("Content-Type", "text/JSON"); 
+        t.getResponseHeaders().add("Access-Control-Allow-Origin","*");
         t.sendResponseHeaders(HTTPStatusCode, response.length());
         OutputStream os = t.getResponseBody();
         os.write(response.getBytes());

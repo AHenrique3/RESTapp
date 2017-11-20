@@ -15,7 +15,7 @@ public class CrudePayment {
     private String payment_date;
     private String payment_type;
     private String product;
-    private double product_price;
+    private String product_price;
     private String discount;
 
     public String getPayment_date() {
@@ -30,7 +30,7 @@ public class CrudePayment {
         return product;
     }
 
-    public double getProduct_price() {
+    public String getProduct_price() {
         return product_price;
     }
 
@@ -38,7 +38,7 @@ public class CrudePayment {
         return discount;
     }
 
-    public CrudePayment(String payment_date, String payment_type, String product, double product_price, String discount) {
+    public CrudePayment(String payment_date, String payment_type, String product, String product_price, String discount) {
         this.payment_date = payment_date;
         this.payment_type = payment_type;
         this.product = product;
@@ -48,6 +48,6 @@ public class CrudePayment {
     
     @Override
     public String toString(){
-        return String.format(" payment_date: %s \n payment_type: %s \n product: %s\n product_price: %f\n discount: %s\n",payment_date,payment_type,product,product_price,discount);
+        return String.format(" payment_date: %s \n payment_type: %s \n product: %s\n product_price: %s\n discount: %s\n",payment_date,payment_type,product,product_price,discount);
     }
 }

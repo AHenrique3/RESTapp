@@ -34,9 +34,10 @@ public class ValidatePayments {
             //compondo o novo pagamento
             int transaction_id = paymentsList.getPaymentsListSize();
             double discount = Double.parseDouble(paymentToValidate.getDiscount());
-            double price = paymentToValidate.getProduct_price()*(1-discount);
+            double product_price = Double.parseDouble(paymentToValidate.getProduct_price());
+            double price = product_price*(1-discount);
             
-            Payment p = new Payment(paymentToValidate.getPayment_date(), paymentToValidate.getPayment_type(), paymentToValidate.getProduct(), paymentToValidate.getProduct_price(), discount, price, transaction_id);
+            Payment p = new Payment(paymentToValidate.getPayment_date(), paymentToValidate.getPayment_type(), paymentToValidate.getProduct(), product_price, discount, price, transaction_id);
             
             paymentsList.addPayment(p);
             LogService.reportMsgs("ValidatePayments", "Pagamento Adicionado");
@@ -93,14 +94,31 @@ public class ValidatePayments {
         if(p == null){
             erro = "Produto nao encontrado";
         }else{
-            if(p.getPrice() != paymentToValidate.getProduct_price()){
-                erro = "Preco invalido";
+            try {
+                double product_price = Double.parseDouble(paymentToValidate.getProduct_price());
+                if(Double.isNaN(product_price)){ //catching NaN results
+                    erro = "Valor de preco invalido";
+                }
+                if(p.getPrice() != product_price){
+                    erro = "Preco invalido";
+                }
+            } catch (Exception ex) {
+                erro = "Valor de preco invalido";
             }
         }
-        double discount = Double.parseDouble(paymentToValidate.getDiscount());
-        if(discount > 0.5 || discount < 0){
-            erro = "Valor de desconto inadequado";
+
+        try {
+            double discount = Double.parseDouble(paymentToValidate.getDiscount());
+            if(Double.isNaN(discount)){ //catching NaN results
+                erro = "Valor de desconto invalido";
+            }
+            if(discount > 0.5 || discount < 0){
+                erro = "Valor de desconto inadequado";
+            }
+        } catch (Exception ex) {
+            erro = "Valor de desconto invalido";
         }
+        
         LogService.reportMsgs("ValidatePayments", "Erro: " + erro);
         return erro;
     }
