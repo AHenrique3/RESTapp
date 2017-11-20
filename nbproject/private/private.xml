@@ -5,10 +5,10 @@
         <group>
             <file>file:/home/afonso/RESTapp/src/restapp/Product.java</file>
             <file>file:/home/afonso/RESTapp/src/restapp/ValidatePayments.java</file>
+            <file>file:/home/afonso/RESTapp/src/restapp/Payment.java</file>
             <file>file:/home/afonso/RESTapp/src/restapp/PlansHandler.java</file>
             <file>file:/home/afonso/RESTapp/src/restapp/PaymentHandler.java</file>
-            <file>file:/home/afonso/RESTapp/src/restapp/RESTapp.java</file>
-            <file>file:/home/afonso/RESTapp/src/restapp/ProductsManager.java</file>
+            <file>file:/home/afonso/RESTapp/src/restapp/CrudePayment.java</file>
         </group>
     </open-files>
 </project-private>

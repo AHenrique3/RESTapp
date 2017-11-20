@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<TITLE>Home</TITLE>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $(function() {
+        $('#payment_form').on("submit",function(e) {
+            e.preventDefault(); // cancel the actual submit
+
+            var contents = $('#payment_form').serializeArray();
+            var formObj = {};
+
+            $.map(contents, function(n, i){
+                //solve discount ratio to send
+                if(n['name'] == 'discount'){
+                    n['value'] = "" + n['value'].split("%")[0]/100
+                }
+                //solve product price w/ comma
+                if(n['name'] == 'product_price'){
+                    n['value'] = n['value'].replace(",", ".")
+                }
+                formObj[n['name']] = n['value'];
+            });
+            var msg = JSON.stringify(formObj);
+
+            //making POST
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8000/payment",
+                contentType: "text/plain; charset=utf-8",
+                dataType: "text",
+                cache: false,
+                async: false,
+                data: msg,
+                success: function callFunction(result) {
+                    $( ".result" ).html( result );
+                },
+                error: function (xhr, status, error) {
+                    var result = xhr.responseText;
+                    $( ".result" ).html( result );
+                }
+            });
+        });
+    });
+
+    //setting payment_date
+    var current_date = new Date().toJSON().slice(0,10).split('-').reverse().join('/');
+    $("#payment_date").val(current_date);
+    //setting discount example
+    $("#discount").val("10%");
+});
+</script>
+</head>
+<body bgcolor="#F0F0F0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a>Estágio 2018</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="nav my-2 my-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="menuProdutos.htm">Produtos <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="menuPOST.htm">Novo Pagamento <span class="sr-only">(current)</span></a>
+            </li> 
+        </ul>
+    </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+        <div class="col"></div>
+        <div class="col-10" align="center">
+            <div class="card w-50 border-dark">
+                <div class="card-body">
+            <form id="payment_form">
+                <div class="form-group form-row justify-content-center">
+                    <label for="payment_date" class="col-sm-5 col-form-label text-left">Data do Pagamento</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="payment_date" name="payment_date" readonly="readonly" required>
+                    </div>
+                </div>
+                <div class="form-group form-row justify-content-center">
+                    <label for="product" class="col-sm-5 col-form-label text-left">Produto</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="product" name="product" required>
+                    </div>
+                </div>
+                <div class="form-group form-row justify-content-center">
+                    <label for="product_price" class="col-sm-5 col-form-label text-left">Valor do Produto (R$)</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="product_price" name="product_price" required>
+                    </div>
+                </div>
+                <div class="form-group form-row justify-content-center">
+                    <label for="discount" class="col-sm-5 col-form-label text-left">Desconto (%)</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="discount" name="discount" required>
+                    </div>
+                </div>
+
+                <div class="form-group form-row justify-content-center">
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="payment_type" value="cartao" checked> Cartão
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="payment_type" value="boleto"> Boleto
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="payment_type" value="dinheiro"> Dinheiro
+                        </label>
+                    </div>
+                </div>
+              <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+            <div id="theDiv2" class="result">
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<TITLE>Home</TITLE>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $.getJSON("http://localhost:8000/plans",function(data){
+        //getting headers
+        var headers = Object.keys(data[0]);   //container for the table headers
+        
+        //getting rows
+        var row_items = []; //container for the table rows
+        for (var index in data) {
+            var product = data[index];
+            row_items.push(Object.values(product));
+        }
+        buildTable(headers,row_items);
+    });
+
+    function buildTable(headers, rows) {
+        var html_table = [];
+
+        //pushing header
+        html_table.push( "<thead class=\"thead-dark\">");
+        html_table.push( "<tr>");
+        for (var index in headers) {
+            html_table.push( "<th>"+headers[index]+"</th>" );
+        }
+        html_table.push( "</tr>" );
+        html_table.push( "</thead>" );
+
+        //pushing values
+        html_table.push( "<tbody>" );
+        for (var index in rows) {
+            html_table.push( "<tr>");
+
+            var row_content = rows[index];
+            for (var index in row_content) {
+                html_table.push( "<td>"+row_content[index]+"</td>" );
+            };
+
+            html_table.push( "<tr>");
+        }
+        
+        html_table.push( "</tbody>" );
+        //inserting table
+        $( "<table/>", {"class": "table table-striped table-bordered",html: html_table.join( "" )}).appendTo("#products_div");
+    }
+});
+</script>
+</script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a>Estágio 2018</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="nav my-2 my-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="menuProdutos.htm">Produtos <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="menuPOST.htm">Novo Pagamento <span class="sr-only">(current)</span></a>
+            </li> 
+        </ul>
+    </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+        <div class="col"></div>
+        <div class="col-10" align="center" id="products_div"></div>
+        <div class="col"></div>
+    </div>
+</div>
+</body>
+</html>
