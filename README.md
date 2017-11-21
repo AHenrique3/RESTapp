@@ -45,3 +45,13 @@ Aplicação REST para o Processo Seletivo Casa e Café 2018. Desenvolvido em JAV
   ```
   Pagamento registrado com sucesso!
   ```
+## Frontend
+* O  frontend foi criado diretamente em HTML utilizando o framework CSS Bootstrap.
+* As páginas se encontram em RESTapp-frontend onde:
+  * menuPOST.htm apresenta um formulário para um novo pagamento e;
+  * menuProdutos.htm apresenta uma tabela listando os produtos;
+* Observação: É necessário que o servidor HTTP esteja ativado para visualizar a tabela e submeter os pagamentos.
+
+## Como Utilizar
+1. Com o servidor ativado, abrir as páginas menuPOST.htm ou menuProdutos.htm (em RESTapp-frontend) no navegador;
+1. Os links no header de cada página levam de uma página a outra;
